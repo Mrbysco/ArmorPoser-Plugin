@@ -32,17 +32,23 @@ public class SyncHandler implements PluginMessageListener {
 		CompoundTag tag = byteBuf.readNbt();
 		Entity entity = ArmorPoserPlugin.Plugin.getServer().getEntity(uuid);
 		if (tag != null && entity instanceof ArmorStand armorStand) {
-//			System.out.println(tag);
-			if (tag.contains("CustomNameVisible"))
-				armorStand.setCustomNameVisible(tag.getBoolean("CustomNameVisible"));
-			if (tag.contains("NoGravity"))
-				armorStand.setGravity(tag.getBoolean("NoGravity"));
 			if (tag.contains("Invisible"))
 				armorStand.setInvisible(tag.getBoolean("Invisible"));
-			if (tag.contains("Small"))
-				armorStand.setSmall(tag.getBoolean("Small"));
+			if (tag.contains("NoBasePlate"))
+				armorStand.setBasePlate(!tag.getBoolean("NoBasePlate"));
+			if (tag.contains("NoGravity"))
+				armorStand.setGravity(!tag.getBoolean("NoGravity"));
 			if (tag.contains("ShowArms"))
 				armorStand.setArms(tag.getBoolean("ShowArms"));
+			if (tag.contains("Small"))
+				armorStand.setSmall(tag.getBoolean("Small"));
+			if (tag.contains("CustomNameVisible"))
+				armorStand.setCustomNameVisible(tag.getBoolean("CustomNameVisible"));
+			if (tag.contains("Rotation")) {
+				ListTag tagList = tag.getList("Rotation", Tag.TAG_FLOAT);
+				armorStand.setBodyYaw(tagList.getFloat(0));
+			}
+
 			if (tag.contains("DisabledSlots")) {
 				int disabledSlots = tag.getInt("DisabledSlots");
 				armorStand.removeDisabledSlots(EquipmentSlot.values());
@@ -52,15 +58,13 @@ public class SyncHandler implements PluginMessageListener {
 					}
 				}
 			}
+
 			if (tag.contains("Scale")) {
 				double scale = tag.getDouble("Scale");
 				if (scale > 0) {
 					armorStand.getAttribute(Attribute.GENERIC_SCALE).setBaseValue(scale);
 				}
 			}
-
-			if (tag.contains("NoBasePlate"))
-				armorStand.setBasePlate(tag.getBoolean("NoBasePlate"));
 
 			if (tag.contains("Pose")) {
 				CompoundTag poseTag = tag.getCompound("Pose");
