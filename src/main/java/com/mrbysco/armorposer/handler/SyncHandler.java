@@ -46,7 +46,9 @@ public class SyncHandler implements PluginMessageListener {
 				armorStand.setCustomNameVisible(tag.getBoolean("CustomNameVisible"));
 			if (tag.contains("Rotation")) {
 				ListTag tagList = tag.getList("Rotation", Tag.TAG_FLOAT);
-				armorStand.setBodyYaw(tagList.getFloat(0));
+				float yaw = tagList.getFloat(0);
+				armorStand.setBodyYaw(yaw);
+				armorStand.setRotation(yaw, armorStand.getPitch());
 			}
 
 			if (tag.contains("DisabledSlots")) {
