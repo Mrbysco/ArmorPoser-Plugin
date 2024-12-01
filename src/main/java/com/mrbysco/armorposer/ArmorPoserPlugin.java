@@ -1,6 +1,7 @@
 package com.mrbysco.armorposer;
 
 import com.mrbysco.armorposer.handler.EventHandlers;
+import com.mrbysco.armorposer.handler.RenameHandler;
 import com.mrbysco.armorposer.handler.SwapHandler;
 import com.mrbysco.armorposer.handler.SyncHandler;
 import org.bukkit.plugin.Plugin;
@@ -13,6 +14,7 @@ public final class ArmorPoserPlugin extends JavaPlugin {
 	public void onEnable() {
 		getServer().getMessenger().registerIncomingPluginChannel(this, "armorposer:sync_packet", new SyncHandler());
 		getServer().getMessenger().registerIncomingPluginChannel(this, "armorposer:swap_packet", new SwapHandler());
+		getServer().getMessenger().registerIncomingPluginChannel(this, "armorposer:rename_packet", new RenameHandler());
 
 		getServer().getPluginManager().registerEvents(new EventHandlers(), this);
 
