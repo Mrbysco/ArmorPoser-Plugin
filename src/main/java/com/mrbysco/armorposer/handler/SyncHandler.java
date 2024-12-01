@@ -64,7 +64,7 @@ public class SyncHandler implements PluginMessageListener {
 			if (tag.contains("Scale")) {
 				double scale = tag.getDouble("Scale");
 				if (scale > 0) {
-					armorStand.getAttribute(Attribute.GENERIC_SCALE).setBaseValue(scale);
+					armorStand.getAttribute(Attribute.SCALE).setBaseValue(scale);
 				}
 			}
 
