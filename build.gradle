@@ -1,40 +1,29 @@
 plugins {
-    id 'java'
-    id 'xyz.jpenilla.run-paper' version '2.2.3'
-    id("io.papermc.paperweight.userdev") version "1.7.1"
+    id("java-library")
+    id("io.papermc.paperweight.userdev") version "2.0.0-beta.14"
+    id("xyz.jpenilla.run-paper") version "2.3.1"
 }
 
 group = 'com.mrbysco'
 version = "${version}"
-archivesBaseName = "${mod_name}"
+base {
+    archivesName = "${mod_name}"
+}
+description = "A paper plugin that allows clients to use Armor Poser to pose armor stands"
+
+java {
+    // Configure the java toolchain. This allows gradle to auto-provision JDK 21 on systems that only have JDK 11 installed for example.
+    toolchain.languageVersion = JavaLanguageVersion.of(21)
+}
 
 dependencies {
     compileOnly "io.papermc.paper:paper-api:${paper_version}"
-    paperweight.paperDevBundle("${paper_version}")
+    paperweight.paperDevBundle("1.21.4-R0.1-SNAPSHOT")
 }
 
 tasks {
-    runServer {
-        // Configure the Minecraft version for our task.
-        // This is the only required configuration besides applying the plugin.
-        // Your plugin's jar (or shadowJar if present) will be used automatically.
-        minecraftVersion("1.21.3")
-    }
-}
-
-def targetJavaVersion = 21
-java {
-    def javaVersion = JavaVersion.toVersion(targetJavaVersion)
-    setSourceCompatibility(javaVersion)
-    setTargetCompatibility(javaVersion)
-    if (JavaVersion.current() < javaVersion) {
-        getToolchain().setLanguageVersion(JavaLanguageVersion.of(targetJavaVersion))
-    }
-}
-
-tasks.withType(JavaCompile).configureEach {
-    if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
-        options.release = targetJavaVersion
+    compileJava {
+        options.release = 21
     }
 }
 
@@ -46,5 +35,3 @@ processResources {
         expand(props)
     }
 }
-
-assemble.dependsOn(reobfJar)
