@@ -8,6 +8,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import org.bukkit.Location;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -63,8 +64,9 @@ public class SyncHandler implements PluginMessageListener {
 
 			if (tag.contains("Scale")) {
 				double scale = tag.getDouble("Scale");
-				if (scale > 0) {
-					armorStand.getAttribute(Attribute.SCALE).setBaseValue(scale);
+				AttributeInstance attribute = armorStand.getAttribute(Attribute.SCALE);
+				if (attribute != null && scale > 0) {
+					attribute.setBaseValue(scale);
 				}
 			}
 
