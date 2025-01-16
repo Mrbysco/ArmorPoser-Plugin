@@ -17,15 +17,17 @@ public class EventHandlers implements Listener {
 	public void onInteract(PlayerInteractEntityEvent event) {
 		Player player = event.getPlayer();
 		Entity entity = event.getRightClicked();
-		if (entity instanceof ArmorStand armorStand && player.isSneaking()) {
-			if (event.getHand() == EquipmentSlot.HAND) {
-				ByteArrayDataOutput out = ByteStreams.newDataOutput();
-				out.writeInt(entity.getEntityId());
-				ArmorPoserPlugin.Plugin.getServer().getMessenger().registerOutgoingPluginChannel(ArmorPoserPlugin.Plugin, "armorposer:screen_packet");
-				player.sendPluginMessage(ArmorPoserPlugin.Plugin, "armorposer:screen_packet", out.toByteArray());
-				ArmorPoserPlugin.Plugin.getServer().getMessenger().unregisterOutgoingPluginChannel(ArmorPoserPlugin.Plugin, "armorposer:screen_packet");
+		if (entity instanceof ArmorStand armorStand) {
+			if (ArmorPoserPlugin.enableConfigGui && player.isSneaking()) {
+				if (event.getHand() == EquipmentSlot.HAND) {
+					ByteArrayDataOutput out = ByteStreams.newDataOutput();
+					out.writeInt(armorStand.getEntityId());
+					ArmorPoserPlugin.Plugin.getServer().getMessenger().registerOutgoingPluginChannel(ArmorPoserPlugin.Plugin, "armorposer:screen_packet");
+					player.sendPluginMessage(ArmorPoserPlugin.Plugin, "armorposer:screen_packet", out.toByteArray());
+					ArmorPoserPlugin.Plugin.getServer().getMessenger().unregisterOutgoingPluginChannel(ArmorPoserPlugin.Plugin, "armorposer:screen_packet");
+				}
+				event.setCancelled(true);
 			}
-			event.setCancelled(true);
 		}
 	}
 
@@ -36,7 +38,7 @@ public class EventHandlers implements Listener {
 		if (entity instanceof ArmorStand armorStand && player.isSneaking()) {
 			if (event.getHand() == EquipmentSlot.HAND) {
 				ByteArrayDataOutput out = ByteStreams.newDataOutput();
-				out.writeInt(entity.getEntityId());
+				out.writeInt(armorStand.getEntityId());
 				ArmorPoserPlugin.Plugin.getServer().getMessenger().registerOutgoingPluginChannel(ArmorPoserPlugin.Plugin, "armorposer:screen_packet");
 				player.sendPluginMessage(ArmorPoserPlugin.Plugin, "armorposer:screen_packet", out.toByteArray());
 				ArmorPoserPlugin.Plugin.getServer().getMessenger().unregisterOutgoingPluginChannel(ArmorPoserPlugin.Plugin, "armorposer:screen_packet");

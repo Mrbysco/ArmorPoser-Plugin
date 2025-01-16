@@ -62,7 +62,7 @@ public class SyncHandler implements PluginMessageListener {
 				}
 			}
 
-			if (tag.contains("Scale")) {
+			if (tag.contains("Scale") && canResize(player)) {
 				double scale = tag.getDouble("Scale");
 				AttributeInstance attribute = armorStand.getAttribute(Attribute.SCALE);
 				if (attribute != null && scale > 0) {
@@ -127,5 +127,15 @@ public class SyncHandler implements PluginMessageListener {
 	private static EulerAngle getAngle(float xDeg, float yDeg, float zDeg) {
 		//Euler uses Radians, so we need to convert the degrees to radians
 		return new EulerAngle(Math.toRadians(xDeg), Math.toRadians(yDeg), Math.toRadians(zDeg));
+	}
+
+	public static boolean canResize(Player player) {
+		if (ArmorPoserPlugin.restrictResizeToOP && player != null) {
+			if (ArmorPoserPlugin.resizeWhitelist.contains(player.getName())){
+				return true;
+			}
+			return player.isOp();
+		}
+		return true;
 	}
 }
