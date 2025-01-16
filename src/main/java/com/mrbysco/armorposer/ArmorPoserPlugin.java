@@ -38,7 +38,7 @@ public final class ArmorPoserPlugin extends JavaPlugin {
 	private void setupConfig() {
 		config.addDefault("enableConfigGui", true);
 		config.addDefault("restrictResizeToOP", false);
-		config.addDefault("restrictResizeToOP", List.of(""));
+		config.addDefault("resizeWhitelist", List.of(""));
 		config.options().copyDefaults(true);
 		saveConfig();
 
