@@ -51,4 +51,13 @@ public final class ArmorPoserPlugin extends JavaPlugin {
 	public void onDisable() {
 		// Plugin shutdown logic
 	}
+
+	public static boolean isFolia() {
+		try {
+			Class.forName("io.papermc.paper.threadedregions.ThreadedRegionizer");
+		} catch (Exception e) {
+			return false;
+		}
+		return true;
+	}
 }
