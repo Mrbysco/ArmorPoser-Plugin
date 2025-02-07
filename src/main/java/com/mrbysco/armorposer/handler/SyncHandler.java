@@ -2,6 +2,7 @@ package com.mrbysco.armorposer.handler;
 
 import com.mrbysco.armorposer.ArmorPoserPlugin;
 import io.netty.buffer.Unpooled;
+import io.papermc.paper.threadedregions.scheduler.FoliaEntityScheduler;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -79,9 +80,15 @@ public class SyncHandler implements PluginMessageListener {
 				double y = tagList.getDouble(1);
 				double z = tagList.getDouble(2);
 				if (x != 0 || y != 0 || z != 0)
-					armorStand.teleport(new Location(armorStand.getWorld(), armorStand.getX() + x,
-							armorStand.getY() + y,
-							armorStand.getZ() + z), PlayerTeleportEvent.TeleportCause.PLUGIN);
+					if (ArmorPoserPlugin.isFolia()) {
+						armorStand.teleportAsync(new Location(armorStand.getWorld(), armorStand.getX() + x,
+								armorStand.getY() + y,
+								armorStand.getZ() + z), PlayerTeleportEvent.TeleportCause.PLUGIN);
+					} else {
+						armorStand.teleport(new Location(armorStand.getWorld(), armorStand.getX() + x,
+								armorStand.getY() + y,
+								armorStand.getZ() + z), PlayerTeleportEvent.TeleportCause.PLUGIN);
+					}
 			}
 		}
 	}
