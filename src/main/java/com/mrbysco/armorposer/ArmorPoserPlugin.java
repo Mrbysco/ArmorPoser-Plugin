@@ -15,7 +15,11 @@ public final class ArmorPoserPlugin extends JavaPlugin {
 	public static Plugin Plugin;
 	public final FileConfiguration config = getConfig();
 
+	public static final String USE_PERMISSION = "armorposer.use";
+	public static final String RESIZE_PERMISSION = "armorposer.resize";
+
 	public static boolean enableConfigGui;
+	public static boolean requirePermissions;
 	public static boolean restrictResizeToOP;
 	public static List<String> resizeWhitelist = new ArrayList<>();
 
@@ -37,12 +41,14 @@ public final class ArmorPoserPlugin extends JavaPlugin {
 	 */
 	private void setupConfig() {
 		config.addDefault("enableConfigGui", true);
+		config.addDefault("requirePermissions", false);
 		config.addDefault("restrictResizeToOP", false);
 		config.addDefault("resizeWhitelist", List.of(""));
 		config.options().copyDefaults(true);
 		saveConfig();
 
 		enableConfigGui = config.getBoolean("enableConfigGui");
+		requirePermissions = config.getBoolean("requirePermissions");
 		restrictResizeToOP = config.getBoolean("restrictResizeToOP");
 		resizeWhitelist = config.getStringList("resizeWhitelist");
 	}

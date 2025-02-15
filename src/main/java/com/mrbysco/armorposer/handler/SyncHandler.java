@@ -2,7 +2,6 @@ package com.mrbysco.armorposer.handler;
 
 import com.mrbysco.armorposer.ArmorPoserPlugin;
 import io.netty.buffer.Unpooled;
-import io.papermc.paper.threadedregions.scheduler.FoliaEntityScheduler;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -137,6 +136,9 @@ public class SyncHandler implements PluginMessageListener {
 	}
 
 	public static boolean canResize(Player player) {
+		if(ArmorPoserPlugin.requirePermissions) {
+			return player.hasPermission(ArmorPoserPlugin.RESIZE_PERMISSION);
+		}
 		if (ArmorPoserPlugin.restrictResizeToOP && player != null) {
 			if (ArmorPoserPlugin.resizeWhitelist.contains(player.getName())){
 				return true;

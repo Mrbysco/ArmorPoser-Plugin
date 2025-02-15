@@ -17,7 +17,7 @@ public class EventHandlers implements Listener {
 	public void onInteract(PlayerInteractAtEntityEvent event) {
 		Player player = event.getPlayer();
 		Entity entity = event.getRightClicked();
-		if (entity instanceof ArmorStand armorStand && player.isSneaking() && ArmorPoserPlugin.enableConfigGui) {
+		if (entity instanceof ArmorStand armorStand && player.isSneaking() && canUseGUI(player)) {
 			if (event.getHand() == EquipmentSlot.HAND) {
 				ByteArrayDataOutput out = ByteStreams.newDataOutput();
 				out.writeInt(armorStand.getEntityId());
@@ -28,4 +28,11 @@ public class EventHandlers implements Listener {
 			event.setCancelled(true);
 		}
 	}
+
+	private boolean canUseGUI(Player player) {
+		if(!ArmorPoserPlugin.enableConfigGui) return false;
+		if(!ArmorPoserPlugin.requirePermissions) return true;
+		return player.hasPermission(ArmorPoserPlugin.USE_PERMISSION);
+	}
+
 }
