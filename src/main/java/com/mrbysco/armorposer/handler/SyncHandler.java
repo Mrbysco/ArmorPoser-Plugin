@@ -136,11 +136,11 @@ public class SyncHandler implements PluginMessageListener {
 	}
 
 	public static boolean canResize(Player player) {
-		if(ArmorPoserPlugin.requirePermissions) {
+		if (ArmorPoserPlugin.requirePermissions) {
 			return player.hasPermission(ArmorPoserPlugin.RESIZE_PERMISSION);
 		}
 		if (ArmorPoserPlugin.restrictResizeToOP && player != null) {
-			if (ArmorPoserPlugin.resizeWhitelist.contains(player.getName())){
+			if (ArmorPoserPlugin.resizeWhitelist.contains(player.getName())) {
 				return true;
 			}
 			return player.isOp();
