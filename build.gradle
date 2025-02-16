@@ -18,7 +18,7 @@ java {
 
 dependencies {
     compileOnly "io.papermc.paper:paper-api:${paper_version}"
-    paperweight.paperDevBundle("1.21.4-R0.1-SNAPSHOT")
+    paperweight.paperDevBundle("${paperweight_version}")
 }
 
 tasks {
