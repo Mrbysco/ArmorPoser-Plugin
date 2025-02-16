@@ -5,6 +5,14 @@
 ## About ##
 This paper plugin adds compatibility for the mod by the same name [Armor Poser](https://www.curseforge.com/minecraft/mc-mods/armor-poser).
 
+## Permissions ##
+When the `requirePermissions` config option is set to `true`, these permissions can be used
+
+| Permission        | Description                               |
+|-------------------|-------------------------------------------|
+| armorposer.use    | Allows a player to open the GUI           |
+| armorposer.resize | Allows a player to resize the Armor Stand |
+
 ## License ##
 * Armor Poser - Plugin licensed under the MIT license
   - (c) 2024 Mrbysco
