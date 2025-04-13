@@ -2,10 +2,11 @@ package com.mrbysco.armorposer.handler;
 
 import com.mrbysco.armorposer.ArmorPoserPlugin;
 import io.netty.buffer.Unpooled;
+import net.minecraft.core.Rotations;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.phys.Vec2;
+import net.minecraft.world.phys.Vec3;
 import org.bukkit.Location;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
@@ -18,6 +19,7 @@ import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.bukkit.util.EulerAngle;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Optional;
 import java.util.UUID;
 
 public class SyncHandler implements PluginMessageListener {
@@ -34,36 +36,38 @@ public class SyncHandler implements PluginMessageListener {
 		Entity entity = ArmorPoserPlugin.Plugin.getServer().getEntity(uuid);
 		if (tag != null && entity instanceof ArmorStand armorStand) {
 			if (tag.contains("Invisible"))
-				armorStand.setInvisible(tag.getBoolean("Invisible"));
+				armorStand.setInvisible(tag.getBooleanOr("Invisible", false));
 			if (tag.contains("NoBasePlate"))
-				armorStand.setBasePlate(!tag.getBoolean("NoBasePlate"));
+				armorStand.setBasePlate(!tag.getBooleanOr("NoBasePlate", false));
 			if (tag.contains("NoGravity"))
-				armorStand.setGravity(!tag.getBoolean("NoGravity"));
+				armorStand.setGravity(!tag.getBooleanOr("NoGravity", false));
 			if (tag.contains("ShowArms"))
-				armorStand.setArms(tag.getBoolean("ShowArms"));
+				armorStand.setArms(tag.getBooleanOr("ShowArms", false));
 			if (tag.contains("Small"))
-				armorStand.setSmall(tag.getBoolean("Small"));
+				armorStand.setSmall(tag.getBooleanOr("Small", false));
 			if (tag.contains("CustomNameVisible"))
-				armorStand.setCustomNameVisible(tag.getBoolean("CustomNameVisible"));
-			if (tag.contains("Rotation")) {
-				ListTag tagList = tag.getList("Rotation", Tag.TAG_FLOAT);
-				float yaw = tagList.getFloat(0);
+				armorStand.setCustomNameVisible(tag.getBooleanOr("CustomNameVisible", false));
+
+			Optional<Vec2> rotation = tag.read("Rotation", Vec2.CODEC);
+			if (rotation.isPresent()) {
+				float yaw = rotation.get().x;
 				armorStand.setBodyYaw(yaw);
 				armorStand.setRotation(yaw, armorStand.getPitch());
 			}
 
 			if (tag.contains("DisabledSlots")) {
-				int disabledSlots = tag.getInt("DisabledSlots");
-				armorStand.removeDisabledSlots(EquipmentSlot.values());
-				for (EquipmentSlot slot : EquipmentSlot.values()) {
-					if (isSlotDisabled(armorStand, slot, disabledSlots)) {
-						armorStand.addDisabledSlots(slot);
-					}
+				int disabledSlots = tag.getIntOr("DisabledSlots", 0);
+				if (disabledSlots == 4144959) {
+					armorStand.setDisabledSlots(EquipmentSlot.values());
+					armorStand.setInvulnerable(true);
+				} else {
+					armorStand.removeDisabledSlots(EquipmentSlot.values());
+					armorStand.setInvulnerable(false);
 				}
 			}
 
 			if (tag.contains("Scale") && canResize(player)) {
-				double scale = tag.getDouble("Scale");
+				double scale = tag.getDoubleOr("Scale", 0.0D);
 				AttributeInstance attribute = armorStand.getAttribute(Attribute.SCALE);
 				if (attribute != null && scale > 0) {
 					attribute.setBaseValue(scale);
@@ -71,13 +75,17 @@ public class SyncHandler implements PluginMessageListener {
 			}
 
 			if (tag.contains("Pose")) {
-				CompoundTag poseTag = tag.getCompound("Pose");
+				CompoundTag poseTag = tag.getCompoundOrEmpty("Pose");
+				if (poseTag.isEmpty()) {
+					return;
+				}
+
 				readPose(armorStand, poseTag);
 
-				ListTag tagList = tag.getList("Move", Tag.TAG_DOUBLE);
-				double x = tagList.getDouble(0);
-				double y = tagList.getDouble(1);
-				double z = tagList.getDouble(2);
+				Vec3 movePos = tag.read("Move", Vec3.CODEC).orElse(Vec3.ZERO);
+				double x = movePos.x();
+				double y = movePos.y();
+				double z = movePos.z();
 				if (x != 0 || y != 0 || z != 0)
 					if (ArmorPoserPlugin.isFolia()) {
 						armorStand.teleportAsync(new Location(armorStand.getWorld(), armorStand.getX() + x,
@@ -92,18 +100,6 @@ public class SyncHandler implements PluginMessageListener {
 		}
 	}
 
-	private boolean isSlotDisabled(ArmorStand armorStand, EquipmentSlot slot, int disabledSlots) {
-		int filterFlag = switch (slot) {
-			case HAND -> 0;
-			case OFF_HAND -> 5;
-			case FEET -> 1;
-			case LEGS -> 2;
-			case CHEST -> 3;
-			default -> 4;
-		};
-		return (disabledSlots & 1 << filterFlag) != 0 || (slot == EquipmentSlot.HAND || slot == EquipmentSlot.OFF_HAND) && !armorStand.hasArms();
-	}
-
 	private static final EulerAngle DEFAULT_HEAD_POSE = getAngle(0.0F, 0.0F, 0.0F);
 	private static final EulerAngle DEFAULT_BODY_POSE = getAngle(0.0F, 0.0F, 0.0F);
 	private static final EulerAngle DEFAULT_LEFT_ARM_POSE = getAngle(-10.0F, 0.0F, -10.0F);
@@ -112,22 +108,26 @@ public class SyncHandler implements PluginMessageListener {
 	private static final EulerAngle DEFAULT_RIGHT_LEG_POSE = getAngle(1.0F, 0.0F, 1.0F);
 
 	private void readPose(ArmorStand armorStand, CompoundTag tag) {
-		ListTag head = tag.getList("Head", 5);
-		armorStand.setHeadPose(head.isEmpty() ? DEFAULT_HEAD_POSE : getAngle(head));
-		ListTag body = tag.getList("Body", 5);
-		armorStand.setBodyPose(body.isEmpty() ? DEFAULT_BODY_POSE : getAngle(body));
-		ListTag leftArm = tag.getList("LeftArm", 5);
-		armorStand.setLeftArmPose(leftArm.isEmpty() ? DEFAULT_LEFT_ARM_POSE : getAngle(leftArm));
-		ListTag rightArm = tag.getList("RightArm", 5);
-		armorStand.setRightArmPose(rightArm.isEmpty() ? DEFAULT_RIGHT_ARM_POSE : getAngle(rightArm));
-		ListTag leftLeg = tag.getList("LeftLeg", 5);
-		armorStand.setLeftLegPose(leftLeg.isEmpty() ? DEFAULT_LEFT_LEG_POSE : getAngle(leftLeg));
-		ListTag rightLeg = tag.getList("RightLeg", 5);
-		armorStand.setRightLegPose(rightLeg.isEmpty() ? DEFAULT_RIGHT_LEG_POSE : getAngle(rightLeg));
+		Rotations head = getRotation(tag, "Head");
+		armorStand.setHeadPose(head == null ? DEFAULT_HEAD_POSE : getAngle(head));
+		Rotations body = getRotation(tag, "Body");
+		armorStand.setBodyPose(body == null ? DEFAULT_BODY_POSE : getAngle(body));
+		Rotations leftArm = getRotation(tag, "LeftArm");
+		armorStand.setLeftArmPose(leftArm == null ? DEFAULT_LEFT_ARM_POSE : getAngle(leftArm));
+		Rotations rightArm = getRotation(tag, "RightArm");
+		armorStand.setRightArmPose(rightArm == null ? DEFAULT_RIGHT_ARM_POSE : getAngle(rightArm));
+		Rotations leftLeg = getRotation(tag, "LeftLeg");
+		armorStand.setLeftLegPose(leftLeg == null ? DEFAULT_LEFT_LEG_POSE : getAngle(leftLeg));
+		Rotations rightLeg = getRotation(tag, "RightLeg");
+		armorStand.setRightLegPose(rightLeg == null ? DEFAULT_RIGHT_LEG_POSE : getAngle(rightLeg));
 	}
 
-	private static EulerAngle getAngle(ListTag tag) {
-		return getAngle(tag.getFloat(0), tag.getFloat(1), tag.getFloat(2));
+	private Rotations getRotation(CompoundTag tag, String key) {
+		return tag.read(key, Rotations.CODEC).orElse(null);
+	}
+
+	private static EulerAngle getAngle(Rotations rotations) {
+		return getAngle(rotations.x(), rotations.y(), rotations.z());
 	}
 
 	private static EulerAngle getAngle(float xDeg, float yDeg, float zDeg) {

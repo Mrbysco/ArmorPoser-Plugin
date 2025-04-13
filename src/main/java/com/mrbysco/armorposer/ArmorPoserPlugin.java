@@ -30,6 +30,8 @@ public final class ArmorPoserPlugin extends JavaPlugin {
 		getServer().getMessenger().registerIncomingPluginChannel(this, "armorposer:sync_packet", new SyncHandler());
 		getServer().getMessenger().registerIncomingPluginChannel(this, "armorposer:swap_packet", new SwapHandler());
 		getServer().getMessenger().registerIncomingPluginChannel(this, "armorposer:rename_packet", new RenameHandler());
+		getServer().getMessenger().registerOutgoingPluginChannel(this, "armorposer:screen_packet");
+		getServer().getMessenger().registerOutgoingPluginChannel(this, "armorposer:locked_packet");
 
 		getServer().getPluginManager().registerEvents(new EventHandlers(), this);
 

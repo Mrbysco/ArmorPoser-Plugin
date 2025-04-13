@@ -19,11 +19,14 @@ public class EventHandlers implements Listener {
 		Entity entity = event.getRightClicked();
 		if (entity instanceof ArmorStand armorStand && player.isSneaking() && canUseGUI(player)) {
 			if (event.getHand() == EquipmentSlot.HAND) {
+				ByteArrayDataOutput lockedOut = ByteStreams.newDataOutput();
+				lockedOut.writeInt(armorStand.getEntityId());
+				lockedOut.writeBoolean(armorStand.isInvulnerable());
+				player.sendPluginMessage(ArmorPoserPlugin.Plugin, "armorposer:locked_packet", lockedOut.toByteArray());
+
 				ByteArrayDataOutput out = ByteStreams.newDataOutput();
 				out.writeInt(armorStand.getEntityId());
-				ArmorPoserPlugin.Plugin.getServer().getMessenger().registerOutgoingPluginChannel(ArmorPoserPlugin.Plugin, "armorposer:screen_packet");
 				player.sendPluginMessage(ArmorPoserPlugin.Plugin, "armorposer:screen_packet", out.toByteArray());
-				ArmorPoserPlugin.Plugin.getServer().getMessenger().unregisterOutgoingPluginChannel(ArmorPoserPlugin.Plugin, "armorposer:screen_packet");
 			}
 			event.setCancelled(true);
 		}
