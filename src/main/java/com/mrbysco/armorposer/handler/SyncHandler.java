@@ -8,7 +8,6 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import org.bukkit.Location;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -45,12 +44,6 @@ public class SyncHandler implements PluginMessageListener {
 				armorStand.setSmall(tag.getBoolean("Small"));
 			if (tag.contains("CustomNameVisible"))
 				armorStand.setCustomNameVisible(tag.getBoolean("CustomNameVisible"));
-			if (tag.contains("Rotation")) {
-				ListTag tagList = tag.getList("Rotation", Tag.TAG_FLOAT);
-				float yaw = tagList.getFloat(0);
-				armorStand.setBodyYaw(yaw);
-				armorStand.setRotation(yaw, armorStand.getPitch());
-			}
 
 			if (tag.contains("DisabledSlots")) {
 				int disabledSlots = tag.getInt("DisabledSlots");
@@ -62,11 +55,10 @@ public class SyncHandler implements PluginMessageListener {
 				}
 			}
 
-			if (tag.contains("Scale") && canResize(player)) {
+			if (tag.contains("Scale")) {
 				double scale = tag.getDouble("Scale");
-				AttributeInstance attribute = armorStand.getAttribute(Attribute.SCALE);
-				if (attribute != null && scale > 0) {
-					attribute.setBaseValue(scale);
+				if (scale > 0) {
+					armorStand.getAttribute(Attribute.GENERIC_SCALE).setBaseValue(scale);
 				}
 			}
 
@@ -79,15 +71,15 @@ public class SyncHandler implements PluginMessageListener {
 				double y = tagList.getDouble(1);
 				double z = tagList.getDouble(2);
 				if (x != 0 || y != 0 || z != 0)
-					if (ArmorPoserPlugin.isFolia()) {
-						armorStand.teleportAsync(new Location(armorStand.getWorld(), armorStand.getX() + x,
-								armorStand.getY() + y,
-								armorStand.getZ() + z), PlayerTeleportEvent.TeleportCause.PLUGIN);
-					} else {
-						armorStand.teleport(new Location(armorStand.getWorld(), armorStand.getX() + x,
-								armorStand.getY() + y,
-								armorStand.getZ() + z), PlayerTeleportEvent.TeleportCause.PLUGIN);
-					}
+					armorStand.teleport(new Location(armorStand.getWorld(), armorStand.getX() + x,
+							armorStand.getY() + y,
+							armorStand.getZ() + z), PlayerTeleportEvent.TeleportCause.PLUGIN);
+			}
+			if (tag.contains("Rotation")) {
+				ListTag tagList = tag.getList("Rotation", Tag.TAG_FLOAT);
+				float yaw = tagList.getFloat(0);
+				armorStand.setBodyYaw(yaw);
+				armorStand.setRotation(yaw, armorStand.getPitch());
 			}
 		}
 	}
@@ -133,18 +125,5 @@ public class SyncHandler implements PluginMessageListener {
 	private static EulerAngle getAngle(float xDeg, float yDeg, float zDeg) {
 		//Euler uses Radians, so we need to convert the degrees to radians
 		return new EulerAngle(Math.toRadians(xDeg), Math.toRadians(yDeg), Math.toRadians(zDeg));
-	}
-
-	public static boolean canResize(Player player) {
-		if (ArmorPoserPlugin.requirePermissions) {
-			return player.hasPermission(ArmorPoserPlugin.RESIZE_PERMISSION);
-		}
-		if (ArmorPoserPlugin.restrictResizeToOP && player != null) {
-			if (ArmorPoserPlugin.resizeWhitelist.contains(player.getName())) {
-				return true;
-			}
-			return player.isOp();
-		}
-		return true;
 	}
 }
