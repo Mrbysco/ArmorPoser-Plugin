@@ -29,10 +29,18 @@ public class SyncHandler implements PluginMessageListener {
 		if (!channel.equals("armorposer:sync_packet")) {
 			return;
 		}
-//		System.out.println("Received message from " + player.getName() + " on channel " + channel);
+
+		// System.out.println("Received message from " + player.getName() + " on channel " + channel);
+
 		FriendlyByteBuf byteBuf = new FriendlyByteBuf(Unpooled.wrappedBuffer(message));
 		UUID uuid = byteBuf.readUUID();
 		CompoundTag tag = byteBuf.readNbt();
+
+		if (tag != null) {
+			tag.remove("HandItems");
+			tag.remove("ArmorItems");
+		}
+
 		Entity entity = ArmorPoserPlugin.Plugin.getServer().getEntity(uuid);
 		if (tag != null && entity instanceof ArmorStand armorStand) {
 			if (tag.contains("Invisible"))
@@ -131,7 +139,7 @@ public class SyncHandler implements PluginMessageListener {
 	}
 
 	private static EulerAngle getAngle(float xDeg, float yDeg, float zDeg) {
-		//Euler uses Radians, so we need to convert the degrees to radians
+		// Euler uses Radians, so we need to convert the degrees to radians
 		return new EulerAngle(Math.toRadians(xDeg), Math.toRadians(yDeg), Math.toRadians(zDeg));
 	}
 
