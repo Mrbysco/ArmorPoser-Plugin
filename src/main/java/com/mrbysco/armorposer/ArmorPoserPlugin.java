@@ -5,6 +5,7 @@ import com.mrbysco.armorposer.handler.RenameHandler;
 import com.mrbysco.armorposer.handler.SwapHandler;
 import com.mrbysco.armorposer.handler.SyncHandler;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -22,6 +23,11 @@ public final class ArmorPoserPlugin extends JavaPlugin {
 	public static boolean requirePermissions;
 	public static boolean restrictResizeToOP;
 	public static List<String> resizeWhitelist = new ArrayList<>();
+
+    public static boolean canUse(Player player) {
+        if (!requirePermissions) return true;
+        return player.hasPermission(ArmorPoserPlugin.USE_PERMISSION);
+    }
 
 	@Override
 	public void onEnable() {
