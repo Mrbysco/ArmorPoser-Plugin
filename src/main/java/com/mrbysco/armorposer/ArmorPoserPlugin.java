@@ -24,10 +24,10 @@ public final class ArmorPoserPlugin extends JavaPlugin {
 	public static boolean restrictResizeToOP;
 	public static List<String> resizeWhitelist = new ArrayList<>();
 
-    public static boolean canUse(Player player) {
-        if (!requirePermissions) return true;
-        return player.hasPermission(ArmorPoserPlugin.USE_PERMISSION);
-    }
+	public static boolean canUse(Player player) {
+		if (!requirePermissions) return true;
+		return player.hasPermission(ArmorPoserPlugin.USE_PERMISSION);
+	}
 
 	@Override
 	public void onEnable() {

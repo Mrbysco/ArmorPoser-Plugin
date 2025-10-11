@@ -21,9 +21,9 @@ public class SwapHandler implements PluginMessageListener {
 			return;
 		}
 
-        if (!ArmorPoserPlugin.canUse(player)) {
-            return;
-        }
+		if (!ArmorPoserPlugin.canUse(player)) {
+			return;
+		}
 
 		FriendlyByteBuf byteBuf = new FriendlyByteBuf(Unpooled.wrappedBuffer(message));
 		UUID uuid = byteBuf.readUUID();

@@ -21,9 +21,9 @@ public class RenameHandler implements PluginMessageListener {
 			return;
 		}
 
-        if (!ArmorPoserPlugin.canUse(player)) {
-            return;
-        }
+		if (!ArmorPoserPlugin.canUse(player)) {
+			return;
+		}
 
 //		System.out.println("Received message from " + player.getName() + " on channel " + channel);
 		FriendlyByteBuf byteBuf = new FriendlyByteBuf(Unpooled.wrappedBuffer(message));
