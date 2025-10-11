@@ -34,8 +34,7 @@ public class EventHandlers implements Listener {
 
 	private boolean canUseGUI(Player player) {
 		if (!ArmorPoserPlugin.enableConfigGui) return false;
-		if (!ArmorPoserPlugin.requirePermissions) return true;
-		return player.hasPermission(ArmorPoserPlugin.USE_PERMISSION);
+		return ArmorPoserPlugin.canUse(player);
 	}
 
 }
