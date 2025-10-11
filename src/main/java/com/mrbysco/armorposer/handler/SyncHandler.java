@@ -29,6 +29,9 @@ public class SyncHandler implements PluginMessageListener {
 		if (!channel.equals("armorposer:sync_packet")) {
 			return;
 		}
+        if (!ArmorPoserPlugin.canUse(player)) {
+            return;
+        }
 //		System.out.println("Received message from " + player.getName() + " on channel " + channel);
 		FriendlyByteBuf byteBuf = new FriendlyByteBuf(Unpooled.wrappedBuffer(message));
 		UUID uuid = byteBuf.readUUID();
