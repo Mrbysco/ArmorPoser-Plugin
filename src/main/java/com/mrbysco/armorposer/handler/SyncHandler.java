@@ -68,7 +68,7 @@ public class SyncHandler implements PluginMessageListener {
 				armorStand.setRotation(yaw, armorStand.getPitch());
 			}
 
-			if (tag.contains("DisabledSlots")) {
+			if (tag.contains("DisabledSlots") && canLock(player)) {
 				int disabledSlots = tag.getIntOr("DisabledSlots", 0);
 				if (disabledSlots == 4144959) {
 					armorStand.setDisabledSlots(EquipmentSlot.values());
@@ -163,6 +163,14 @@ public class SyncHandler implements PluginMessageListener {
 				return true;
 			}
 			return player.isOp();
+		}
+		return true;
+	}
+
+	public static boolean canLock(Player player) {
+		if (player == null) return false;
+		if (ArmorPoserPlugin.requirePermissions) {
+			return player.hasPermission(ArmorPoserPlugin.LOCK_PERMISSION);
 		}
 		return true;
 	}
