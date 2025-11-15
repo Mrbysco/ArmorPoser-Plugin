@@ -4,10 +4,12 @@ import com.mrbysco.armorposer.handler.EventHandlers;
 import com.mrbysco.armorposer.handler.RenameHandler;
 import com.mrbysco.armorposer.handler.SwapHandler;
 import com.mrbysco.armorposer.handler.SyncHandler;
+import org.bukkit.Server;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.messaging.Messenger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,13 +35,15 @@ public final class ArmorPoserPlugin extends JavaPlugin {
 	public void onEnable() {
 		setupConfig();
 
-		getServer().getMessenger().registerIncomingPluginChannel(this, "armorposer:sync_packet", new SyncHandler());
-		getServer().getMessenger().registerIncomingPluginChannel(this, "armorposer:swap_packet", new SwapHandler());
-		getServer().getMessenger().registerIncomingPluginChannel(this, "armorposer:rename_packet", new RenameHandler());
-		getServer().getMessenger().registerOutgoingPluginChannel(this, "armorposer:screen_packet");
-		getServer().getMessenger().registerOutgoingPluginChannel(this, "armorposer:locked_packet");
+		final Server server = getServer();
+		final Messenger messenger = server.getMessenger();
+		messenger.registerIncomingPluginChannel(this, "armorposer:sync_packet", new SyncHandler());
+		messenger.registerIncomingPluginChannel(this, "armorposer:swap_packet", new SwapHandler());
+		messenger.registerIncomingPluginChannel(this, "armorposer:rename_packet", new RenameHandler());
+		messenger.registerOutgoingPluginChannel(this, "armorposer:screen_packet");
+		messenger.registerOutgoingPluginChannel(this, "armorposer:locked_packet");
 
-		getServer().getPluginManager().registerEvents(new EventHandlers(), this);
+		server.getPluginManager().registerEvents(new EventHandlers(), this);
 
 		Plugin = this;
 	}
