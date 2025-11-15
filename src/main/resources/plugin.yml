@@ -1,7 +1,7 @@
 name: ArmorPoser
 version: '${version}'
 main: com.mrbysco.armorposer.ArmorPoserPlugin
-api-version: '1.21.5'
+api-version: '1.21.10'
 folia-supported: true
 author: "Mrbysco"
 description: "A paper plugin that allows clients to use Armor Poser to pose armor stands"
