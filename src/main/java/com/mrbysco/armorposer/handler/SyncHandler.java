@@ -19,10 +19,16 @@ import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.bukkit.util.EulerAngle;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 public class SyncHandler implements PluginMessageListener {
+
+	private static final List<String> allowedKeys = List.of(
+			"Invisible", "NoBasePlate", "NoGravity", "ShowArms", "Small", "CustomNameVisible", "Invulnerable",
+			"Pose", "DisabledSlots", "Pose", "Scale", "Move", "Rotation"
+	);
 
 	@Override
 	public void onPluginMessageReceived(@NotNull String channel, @NotNull Player player, @NotNull byte[] message) {
@@ -32,12 +38,16 @@ public class SyncHandler implements PluginMessageListener {
 		if (!ArmorPoserPlugin.canUse(player)) {
 			return;
 		}
-//		System.out.println("Received message from " + player.getName() + " on channel " + channel);
 		FriendlyByteBuf byteBuf = new FriendlyByteBuf(Unpooled.wrappedBuffer(message));
 		UUID uuid = byteBuf.readUUID();
 		CompoundTag tag = byteBuf.readNbt();
 		Entity entity = ArmorPoserPlugin.Plugin.getServer().getEntity(uuid);
 		if (tag != null && entity instanceof ArmorStand armorStand) {
+			List<String> keysToRemove = tag.keySet().stream()
+					.filter(key -> !allowedKeys.contains(key))
+					.toList();
+			keysToRemove.forEach(tag::remove);
+
 			if (tag.contains("Invisible"))
 				armorStand.setInvisible(tag.getBooleanOr("Invisible", false));
 			if (tag.contains("NoBasePlate"))
@@ -89,7 +99,9 @@ public class SyncHandler implements PluginMessageListener {
 				double x = movePos.x();
 				double y = movePos.y();
 				double z = movePos.z();
-				if (x != 0 || y != 0 || z != 0)
+				if (x != 0 || y != 0 || z != 0) {
+					float oldYaw = armorStand.getYaw();
+					float oldPitch = armorStand.getPitch();
 					if (ArmorPoserPlugin.isFolia()) {
 						armorStand.teleportAsync(new Location(armorStand.getWorld(), armorStand.getX() + x,
 								armorStand.getY() + y,
@@ -99,6 +111,9 @@ public class SyncHandler implements PluginMessageListener {
 								armorStand.getY() + y,
 								armorStand.getZ() + z), PlayerTeleportEvent.TeleportCause.PLUGIN);
 					}
+					armorStand.setBodyYaw(oldYaw);
+					armorStand.setRotation(oldYaw, oldPitch);
+				}
 			}
 		}
 	}
