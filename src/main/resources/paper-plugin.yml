@@ -5,3 +5,4 @@ api-version: '1.21.11'
 author: "Mrbysco"
 description: "A paper plugin that allows clients to use Armor Poser to pose armor stands"
 website: "https://www.curseforge.com/minecraft/bukkit-plugins/armor-poser-plugin"
+folia-supported: true
