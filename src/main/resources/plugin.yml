@@ -1,7 +1,8 @@
 name: ArmorPoser
-version: '${plugin_version}'
+version: '${version}'
 main: com.mrbysco.armorposer.ArmorPoserPlugin
-api-version: '1.21.11'
+api-version: '1.21.10'
+folia-supported: true
 author: "Mrbysco"
 description: "A paper plugin that allows clients to use Armor Poser to pose armor stands"
 website: "https://www.curseforge.com/minecraft/bukkit-plugins/armor-poser-plugin"

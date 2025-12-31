@@ -1,11 +1,11 @@
 plugins {
     id 'java'
-    id("io.papermc.paperweight.userdev") version "2.0.0-beta.19"
+    id("io.papermc.paperweight.userdev") version "2.0.0-beta.18"
     id("xyz.jpenilla.run-paper") version "3.0.2"
 }
 
 group = 'com.mrbysco'
-version = plugin_version
+version = "${version}"
 base {
     archivesName = "${mod_name}"
 }
@@ -31,13 +31,11 @@ tasks {
     }
 }
 
-paperweight.reobfArtifactConfiguration = io.papermc.paperweight.userdev.ReobfArtifactConfiguration.getMOJANG_PRODUCTION()
-
 processResources {
-    def props = [plugin_version: plugin_version]
+    def props = [version: version]
     getInputs().properties(props)
     filteringCharset("UTF-8")
-    filesMatching(["plugin.yml", "paper-plugin.yml"]) {
+    filesMatching("plugin.yml") {
         expand(props)
     }
 }
