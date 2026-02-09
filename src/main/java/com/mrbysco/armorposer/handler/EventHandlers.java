@@ -3,6 +3,9 @@ package com.mrbysco.armorposer.handler;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import com.mrbysco.armorposer.ArmorPoserPlugin;
+import io.netty.buffer.Unpooled;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -10,6 +13,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.inventory.EquipmentSlot;
+
+import java.util.List;
 
 public class EventHandlers implements Listener {
 
@@ -24,9 +29,14 @@ public class EventHandlers implements Listener {
 				lockedOut.writeBoolean(armorStand.isInvulnerable());
 				player.sendPluginMessage(ArmorPoserPlugin.Plugin, "armorposer:locked_packet", lockedOut.toByteArray());
 
-				ByteArrayDataOutput out = ByteStreams.newDataOutput();
-				out.writeInt(armorStand.getEntityId());
-				player.sendPluginMessage(ArmorPoserPlugin.Plugin, "armorposer:screen_packet", out.toByteArray());
+				FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
+				buffer.writeInt(armorStand.getEntityId());
+				buffer.writeCollection(List.of(), ByteBufCodecs.STRING_UTF8); //TODO: Add restriction code
+
+				byte[] bytes = new byte[buffer.writerIndex()];
+				buffer.getBytes(0, bytes);
+
+				player.sendPluginMessage(ArmorPoserPlugin.Plugin, "armorposer:screen_packet", bytes);
 			}
 			event.setCancelled(true);
 		}
