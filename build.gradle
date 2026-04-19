@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id("io.papermc.paperweight.userdev") version "2.0.0-beta.19"
+    id("io.papermc.paperweight.userdev") version "2.0.0-beta.21"
     id("xyz.jpenilla.run-paper") version "3.0.2"
 }
 
@@ -9,11 +9,10 @@ version = plugin_version
 base {
     archivesName = "${mod_name}"
 }
-description = "A paper plugin that allows clients to use Armor Poser to pose armor stands"
 
 java {
     // Configure the java toolchain. This allows gradle to auto-provision JDK 21 on systems that only have JDK 11 installed for example.
-    toolchain.languageVersion = JavaLanguageVersion.of(21)
+    toolchain.languageVersion = JavaLanguageVersion.of(25)
 }
 
 dependencies {
@@ -23,7 +22,7 @@ dependencies {
 
 tasks {
     compileJava {
-        options.release = 21
+        options.release = 25
     }
     runServer {
         minecraftVersion("${mc_version}")
