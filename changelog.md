@@ -1,1 +1,1 @@
-* Add support for the group edit functionality added in Armor Poser `14.1.0`
+* Update to 26.2
