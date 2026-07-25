@@ -1,9 +1,11 @@
 package com.mrbysco.armorposer;
 
+import com.mojang.serialization.Codec;
 import com.mrbysco.armorposer.handler.EventHandlers;
 import com.mrbysco.armorposer.handler.RenameHandler;
 import com.mrbysco.armorposer.handler.SwapHandler;
 import com.mrbysco.armorposer.handler.SyncHandler;
+import com.mrbysco.armorposer.handler.UpdateGroupHandler;
 import org.bukkit.Server;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -27,6 +29,8 @@ public final class ArmorPoserPlugin extends JavaPlugin {
 	public static boolean restrictResizeToOP;
 	public static List<String> resizeWhitelist = new ArrayList<>();
 
+	public static final Codec<List<String>> TAG_LIST_CODEC = Codec.STRING.sizeLimitedListOf(1024);
+
 	public static boolean canUse(Player player) {
 		if (!requirePermissions) return true;
 		return player.hasPermission(ArmorPoserPlugin.USE_PERMISSION);
@@ -41,8 +45,10 @@ public final class ArmorPoserPlugin extends JavaPlugin {
 		messenger.registerIncomingPluginChannel(this, "armorposer:sync_packet", new SyncHandler());
 		messenger.registerIncomingPluginChannel(this, "armorposer:swap_packet", new SwapHandler());
 		messenger.registerIncomingPluginChannel(this, "armorposer:rename_packet", new RenameHandler());
+		messenger.registerIncomingPluginChannel(this, "armorposer:update_group_packet", new UpdateGroupHandler());
 		messenger.registerOutgoingPluginChannel(this, "armorposer:screen_packet");
 		messenger.registerOutgoingPluginChannel(this, "armorposer:locked_packet");
+		messenger.registerOutgoingPluginChannel(this, "armorposer:sync_group_packet");
 
 		server.getPluginManager().registerEvents(new EventHandlers(), this);
 
