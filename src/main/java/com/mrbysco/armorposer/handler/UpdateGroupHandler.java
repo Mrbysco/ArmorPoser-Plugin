@@ -1,6 +1,5 @@
 package com.mrbysco.armorposer.handler;
 
-import com.mojang.serialization.Codec;
 import com.mrbysco.armorposer.ArmorPoserPlugin;
 import io.netty.buffer.Unpooled;
 import net.minecraft.core.component.DataComponents;
