@@ -45,6 +45,8 @@ public class EventHandlers implements Listener {
 				FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
 				buffer.writeInt(armorStand.getEntityId());
 				buffer.writeCollection(List.of(), ByteBufCodecs.STRING_UTF8); //TODO: Add restriction code
+				buffer.writeDouble(ArmorPoserPlugin.minScale);
+				buffer.writeDouble(ArmorPoserPlugin.maxScale);
 
 				byte[] bytes = new byte[buffer.writerIndex()];
 				buffer.getBytes(0, bytes);

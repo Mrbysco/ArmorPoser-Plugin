@@ -81,9 +81,13 @@ public class SyncHandler implements PluginMessageListener {
 
 			if (tag.contains("Scale") && canResize(player)) {
 				double scale = tag.getDoubleOr("Scale", 0.0D);
-				AttributeInstance attribute = armorStand.getAttribute(Attribute.SCALE);
-				if (attribute != null && scale > 0) {
-					attribute.setBaseValue(scale);
+				if (scale >= ArmorPoserPlugin.minScale && scale <= ArmorPoserPlugin.maxScale) {
+					AttributeInstance attribute = armorStand.getAttribute(Attribute.SCALE);
+					if (attribute != null && scale > 0) {
+						attribute.setBaseValue(scale);
+					}
+				} else {
+					ArmorPoserPlugin.Plugin.getLogger().warning("Scale value out of bounds: " + scale);
 				}
 			}
 

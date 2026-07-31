@@ -28,6 +28,8 @@ public final class ArmorPoserPlugin extends JavaPlugin {
 	public static boolean requirePermissions;
 	public static boolean restrictResizeToOP;
 	public static List<String> resizeWhitelist = new ArrayList<>();
+	public static double minScale;
+	public static double maxScale;
 
 	public static final Codec<List<String>> TAG_LIST_CODEC = Codec.STRING.sizeLimitedListOf(1024);
 
@@ -63,6 +65,8 @@ public final class ArmorPoserPlugin extends JavaPlugin {
 		config.addDefault("requirePermissions", false);
 		config.addDefault("restrictResizeToOP", false);
 		config.addDefault("resizeWhitelist", List.of(""));
+		config.addDefault("minScale", 0.0625);
+		config.addDefault("maxScale", 10);
 		config.options().copyDefaults(true);
 		saveConfig();
 
@@ -70,6 +74,8 @@ public final class ArmorPoserPlugin extends JavaPlugin {
 		requirePermissions = config.getBoolean("requirePermissions");
 		restrictResizeToOP = config.getBoolean("restrictResizeToOP");
 		resizeWhitelist = config.getStringList("resizeWhitelist");
+		minScale = Math.clamp(config.getDouble("minScale"), 0.0625, 16.0);
+		maxScale = Math.clamp(config.getDouble("maxScale"), 0.0625, 16.0);
 	}
 
 	@Override
