@@ -12,6 +12,8 @@ When the `requirePermissions` config option is set to `true`, these permissions 
 |-------------------|-------------------------------------------|
 | armorposer.use    | Allows a player to open the GUI           |
 | armorposer.resize | Allows a player to resize the Armor Stand |
+| armorposer.lock   | Allows a player to lock the Armor Stand   |
+| armorposer.move   | Allows a player to move the Armor Stand   |
 
 ## License ##
 * Armor Poser - Plugin licensed under the MIT license
