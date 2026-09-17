@@ -1,1 +1,1 @@
-* Add min and max scale config options (This requires version `15.0.1` of the mod on the client-side)
+* Update to 26.3
