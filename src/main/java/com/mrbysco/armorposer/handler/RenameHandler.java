@@ -17,7 +17,7 @@ public class RenameHandler implements PluginMessageListener {
 
 	@Override
 	public void onPluginMessageReceived(@NotNull String channel, @NotNull Player player, @NotNull byte[] message) {
-		if (!channel.equals("armorposer:rename_packet")) {
+		if (!channel.equals("armorposer:rename_packet/v1")) {
 			return;
 		}
 

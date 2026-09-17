@@ -17,7 +17,7 @@ public class SwapHandler implements PluginMessageListener {
 
 	@Override
 	public void onPluginMessageReceived(@NotNull String channel, @NotNull Player player, @NotNull byte[] message) {
-		if (!channel.equals("armorposer:swap_packet")) {
+		if (!channel.equals("armorposer:swap_packet/v1")) {
 			return;
 		}
 

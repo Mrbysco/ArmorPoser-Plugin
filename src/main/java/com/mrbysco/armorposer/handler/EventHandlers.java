@@ -39,19 +39,19 @@ public class EventHandlers implements Listener {
 				ByteArrayDataOutput lockedOut = ByteStreams.newDataOutput();
 				lockedOut.writeInt(armorStand.getEntityId());
 				lockedOut.writeBoolean(armorStand.isInvulnerable());
-				player.sendPluginMessage(ArmorPoserPlugin.Plugin, "armorposer:locked_packet", lockedOut.toByteArray());
+				player.sendPluginMessage(ArmorPoserPlugin.Plugin, "armorposer:locked_packet/v1", lockedOut.toByteArray());
 
 				// Screen
 				FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
 				buffer.writeInt(armorStand.getEntityId());
-				buffer.writeCollection(List.of(), ByteBufCodecs.STRING_UTF8); //TODO: Add restriction code
+				ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list()).encode(buffer, List.of()); //TODO: Add restriction code
 				buffer.writeDouble(ArmorPoserPlugin.minScale);
 				buffer.writeDouble(ArmorPoserPlugin.maxScale);
 
 				byte[] bytes = new byte[buffer.writerIndex()];
 				buffer.getBytes(0, bytes);
 
-				player.sendPluginMessage(ArmorPoserPlugin.Plugin, "armorposer:screen_packet", bytes);
+				player.sendPluginMessage(ArmorPoserPlugin.Plugin, "armorposer:screen_packet/v1", bytes);
 
 				// Sync Groups
 				FriendlyByteBuf groupBuffer = new FriendlyByteBuf(Unpooled.buffer());
@@ -60,7 +60,7 @@ public class EventHandlers implements Listener {
 
 				byte[] groupBytes = new byte[groupBuffer.writerIndex()];
 				groupBuffer.getBytes(0, groupBytes);
-				player.sendPluginMessage(ArmorPoserPlugin.Plugin, "armorposer:sync_group_packet", groupBytes);
+				player.sendPluginMessage(ArmorPoserPlugin.Plugin, "armorposer:sync_group_packet/v1", groupBytes);
 			}
 			event.setCancelled(true);
 		}

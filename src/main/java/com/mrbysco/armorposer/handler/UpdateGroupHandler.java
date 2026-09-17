@@ -21,7 +21,7 @@ public class UpdateGroupHandler implements PluginMessageListener {
 
 	@Override
 	public void onPluginMessageReceived(@NotNull String channel, @NotNull Player player, @NotNull byte[] message) {
-		if (!channel.equals("armorposer:update_group_packet")) {
+		if (!channel.equals("armorposer:update_group_packet/v1")) {
 			return;
 		}
 		FriendlyByteBuf byteBuf = new FriendlyByteBuf(Unpooled.wrappedBuffer(message));

@@ -32,7 +32,7 @@ public class SyncHandler implements PluginMessageListener {
 
 	@Override
 	public void onPluginMessageReceived(@NotNull String channel, @NotNull Player player, @NotNull byte[] message) {
-		if (!channel.equals("armorposer:sync_packet")) {
+		if (!channel.equals("armorposer:sync_packet/v1")) {
 			return;
 		}
 		if (!ArmorPoserPlugin.canUse(player)) {

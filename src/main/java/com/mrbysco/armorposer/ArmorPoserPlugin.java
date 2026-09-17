@@ -44,13 +44,13 @@ public final class ArmorPoserPlugin extends JavaPlugin {
 
 		final Server server = getServer();
 		final Messenger messenger = server.getMessenger();
-		messenger.registerIncomingPluginChannel(this, "armorposer:sync_packet", new SyncHandler());
-		messenger.registerIncomingPluginChannel(this, "armorposer:swap_packet", new SwapHandler());
-		messenger.registerIncomingPluginChannel(this, "armorposer:rename_packet", new RenameHandler());
-		messenger.registerIncomingPluginChannel(this, "armorposer:update_group_packet", new UpdateGroupHandler());
-		messenger.registerOutgoingPluginChannel(this, "armorposer:screen_packet");
-		messenger.registerOutgoingPluginChannel(this, "armorposer:locked_packet");
-		messenger.registerOutgoingPluginChannel(this, "armorposer:sync_group_packet");
+		messenger.registerIncomingPluginChannel(this, "armorposer:sync_packet/v1", new SyncHandler());
+		messenger.registerIncomingPluginChannel(this, "armorposer:swap_packet/v1", new SwapHandler());
+		messenger.registerIncomingPluginChannel(this, "armorposer:rename_packet/v1", new RenameHandler());
+		messenger.registerIncomingPluginChannel(this, "armorposer:update_group_packet/v1", new UpdateGroupHandler());
+		messenger.registerOutgoingPluginChannel(this, "armorposer:screen_packet/v1");
+		messenger.registerOutgoingPluginChannel(this, "armorposer:locked_packet/v1");
+		messenger.registerOutgoingPluginChannel(this, "armorposer:sync_group_packet/v1");
 
 		server.getPluginManager().registerEvents(new EventHandlers(), this);
 
