@@ -23,6 +23,7 @@ public final class ArmorPoserPlugin extends JavaPlugin {
 	public static final String USE_PERMISSION = "armorposer.use";
 	public static final String RESIZE_PERMISSION = "armorposer.resize";
 	public static final String LOCK_PERMISSION = "armorposer.lock";
+	public static final String MOVE_PERMISSION = "armorposer.move";
 
 	public static boolean enableConfigGui;
 	public static boolean requirePermissions;
@@ -36,6 +37,11 @@ public final class ArmorPoserPlugin extends JavaPlugin {
 	public static boolean canUse(Player player) {
 		if (!requirePermissions) return true;
 		return player.hasPermission(ArmorPoserPlugin.USE_PERMISSION);
+	}
+
+	public static boolean canMove(Player player) {
+		if (!requirePermissions) return true;
+		return player.hasPermission(ArmorPoserPlugin.MOVE_PERMISSION);
 	}
 
 	@Override

@@ -103,7 +103,7 @@ public class SyncHandler implements PluginMessageListener {
 				double x = movePos.x();
 				double y = movePos.y();
 				double z = movePos.z();
-				if (x != 0 || y != 0 || z != 0) {
+				if ((x != 0 || y != 0 || z != 0) && ArmorPoserPlugin.canMove(player)) {
 					float oldYaw = armorStand.getYaw();
 					float oldPitch = armorStand.getPitch();
 					if (ArmorPoserPlugin.isFolia()) {
